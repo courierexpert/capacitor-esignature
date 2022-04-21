@@ -8,9 +8,11 @@ def capacitor_pods
 end
 
 target 'Plugin' do
+  pod 'SwiftSignatureView', '~> 3.2.0'
   capacitor_pods
 end
 
 target 'PluginTests' do
+  pod 'SwiftSignatureView', '~> 3.2.0'
   capacitor_pods
 end
