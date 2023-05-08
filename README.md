@@ -14,7 +14,7 @@ npx cap sync
 <docgen-index>
 
 * [`initialise()`](#initialise)
-* [`clear()`](#clear)
+* [`clearSignature()`](#clearsignature)
 
 </docgen-index>
 
@@ -32,10 +32,10 @@ initialise() => Promise<any>
 --------------------
 
 
-### clear()
+### clearSignature()
 
 ```typescript
-clear() => Promise<any>
+clearSignature() => Promise<any>
 ```
 
 **Returns:** <code>Promise&lt;any&gt;</code>

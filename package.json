@@ -1,5 +1,5 @@
 {
-  "name": "courierexpertesignature",
+  "name": "@courierexpert/capacitor-esignature",
   "version": "0.0.1",
   "description": "Native e-signature custom capacitor plugin",
   "main": "dist/plugin.cjs.js",
@@ -11,13 +11,13 @@
     "android/build.gradle",
     "dist/",
     "ios/Plugin/",
-    "Courierexpertesignature.podspec"
+    "CourierexpertEsignature.podspec"
   ],
   "author": "Jamie Stephens",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/courierexpert/courierexpertesignature.git"
+    "url": "git+https://github.com/courierexpert/capacitor-esignature.git"
   },
   "bugs": {
     "url": "https://github.com/courierexpert/courierexpertesignature/issues"
@@ -57,7 +57,7 @@
     "rimraf": "^3.0.2",
     "rollup": "^2.32.0",
     "swiftlint": "^1.0.1",
-    "typescript": "~4.0.3"
+    "typescript": "^5.0.4"
   },
   "peerDependencies": {
     "@capacitor/core": "^5.0.0"
