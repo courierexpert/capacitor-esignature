@@ -10,7 +10,7 @@ export class EsignatureWeb extends WebPlugin implements EsignaturePlugin {
     });
 
   }
-  async clear(): Promise<any> {
+  async clearSignature(): Promise<any> {
 
     return new Promise( (resolve) => {
       resolve("Not implemented")

@@ -9,9 +9,10 @@ import SwiftSignatureView
 @objc(EsignaturePlugin)
 public class EsignaturePlugin: CAPPlugin, SwiftSignatureViewDelegate, UIApplicationDelegate {
     private let implementation = Esignature()
-    
+
+
     // Buttons
-    
+
         // Clear
         let clearButton = UIButton(frame: CGRect(x: 0, y: 25, width: (UIScreen.main.bounds.width / 3), height: 50))
         // Clear
@@ -19,23 +20,25 @@ public class EsignaturePlugin: CAPPlugin, SwiftSignatureViewDelegate, UIApplicat
         // Save
         let saveButton = UIButton(frame: CGRect(x: (UIScreen.main.bounds.width / 3), y: 25, width: (UIScreen.main.bounds.width / 3), height: 50))
         // Save
-        
+
         // Close
         let closeButton = UIButton(frame: CGRect(x: (UIScreen.main.bounds.width - (UIScreen.main.bounds.width / 3)), y: 25, width: (UIScreen.main.bounds.width / 3), height: 50))
         // Close
-    
+
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
-    
+
     // Buttons
 
     var signatureView: SwiftSignatureView = {
         SwiftSignatureView(frame: CGRect.zero)
         }()
-    
+
     override public func load() {
        NotificationCenter.default.addObserver(self, selector: #selector(self.rotated), name: UIDevice.orientationDidChangeNotification, object: nil)
+
+
     }
-    
+
      @objc func rotated()
     {
         self.clearButton.frame = CGRect(x: 0, y: 25, width: (UIScreen.main.bounds.width / 3), height: 50)
@@ -61,8 +64,18 @@ public class EsignaturePlugin: CAPPlugin, SwiftSignatureViewDelegate, UIApplicat
             let viewController = bridge.viewController;
 
             if let viewController = viewController {
-                self.signatureView.backgroundColor = UIColor.red
                 self.signatureView.translatesAutoresizingMaskIntoConstraints = false
+
+                if viewController.traitCollection.userInterfaceStyle == .dark {
+                    self.signatureView.strokeColor = UIColor.red
+                } else {
+                    self.signatureView.strokeColor = UIColor.black
+                }
+
+                self.signatureView.backgroundColor = UIColor.white
+                self.signatureView.minimumStrokeWidth = 1
+                self.signatureView.maximumStrokeWidth = 5
+                self.signatureView.strokeAlpha = 1
 
                 UIView.transition(with: viewController.view, duration: 0.5, options: [.curveEaseIn, .transitionFlipFromLeft], animations: {
                     viewController.view.addSubview(self.signatureView)
@@ -72,7 +85,7 @@ public class EsignaturePlugin: CAPPlugin, SwiftSignatureViewDelegate, UIApplicat
                 viewController.view.addConstraint(NSLayoutConstraint(item: self.signatureView, attribute: .leading, relatedBy: .equal, toItem: viewController.view, attribute: .leading, multiplier: 1, constant: 0))
                 viewController.view.addConstraint(NSLayoutConstraint(item: self.signatureView, attribute: .trailing, relatedBy: .equal, toItem: viewController.view, attribute: .trailing, multiplier: 1, constant: 0))
                 viewController.view.addConstraint(NSLayoutConstraint(item: self.signatureView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: UIScreen.main.bounds.height))
-                
+
                 self.signatureView.delegate = self
 
                 // Buttons
@@ -82,7 +95,7 @@ public class EsignaturePlugin: CAPPlugin, SwiftSignatureViewDelegate, UIApplicat
                     self.clearButton.isUserInteractionEnabled = true
                     self.clearButton.isEnabled = true
                     self.clearButton.setTitle("Clear", for: .normal)
-                    self.clearButton.addTarget(self, action:#selector(self.clear), for: .touchUpInside)
+                    self.clearButton.addTarget(self, action:#selector(self.clearSignature), for: .touchUpInside)
                     self.signatureView.addSubview(self.clearButton)
                     // Clear
 
@@ -105,7 +118,7 @@ public class EsignaturePlugin: CAPPlugin, SwiftSignatureViewDelegate, UIApplicat
                     // Close
 
                 // Buttons
-                
+
                 // Label
                 self.label.textAlignment = .center
                 self.label.text = "Sign here"
@@ -121,15 +134,17 @@ public class EsignaturePlugin: CAPPlugin, SwiftSignatureViewDelegate, UIApplicat
 
     }
 
-    @objc func clear() {
+    @objc func clearSignature(_ call: CAPPluginCall) {
+      DispatchQueue.main.async {
         self.signatureView.clear()
+      }
    }
 
     @objc func save() {
         DispatchQueue.main.async {
-            
+
             if (self.signatureView.isEmpty) {
-                
+
                 guard let bridge = self.bridge else { return }
 
                 let viewController = bridge.viewController;
@@ -137,28 +152,28 @@ public class EsignaturePlugin: CAPPlugin, SwiftSignatureViewDelegate, UIApplicat
                 if let viewController = viewController {
 
                     let alert = UIAlertController(title: "No Signature", message: "A signature must be provided", preferredStyle: .alert)
-                        
+
                      let ok = UIAlertAction(title: "OK", style: .default, handler: { action in
                      })
-                    
+
                      alert.addAction(ok)
-                    
+
                      DispatchQueue.main.async(execute: {
                         viewController.present(alert, animated: true)
                      })
 
                 }
-                
+
             } else {
-                
+
                 let image = self.convertImageToBase64String(img: self.signatureView.getCroppedSignature()!);
 
                 self.notifyListeners("signatureSaved", data: [ "success": image ]);
 
                 self.close()
-                
+
             }
-            
+
         }
    }
 
@@ -178,7 +193,7 @@ public class EsignaturePlugin: CAPPlugin, SwiftSignatureViewDelegate, UIApplicat
    }
 
     @objc func convertImageToBase64String (img: UIImage) -> String {
-        return img.jpegData(compressionQuality: 1)?.base64EncodedString() ?? ""
+        return img.jpegData(compressionQuality: 0.3)?.base64EncodedString() ?? ""
     }
 
 }

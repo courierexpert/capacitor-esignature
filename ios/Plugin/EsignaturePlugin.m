@@ -5,5 +5,5 @@
 // each method the plugin supports using the CAP_PLUGIN_METHOD macro.
 CAP_PLUGIN(EsignaturePlugin, "Esignature",
       CAP_PLUGIN_METHOD(initialise, CAPPluginReturnPromise);
-      CAP_PLUGIN_METHOD(clear, CAPPluginReturnPromise);
+      CAP_PLUGIN_METHOD(clearSignature, CAPPluginReturnPromise);
 )
